@@ -39,15 +39,22 @@
   "Minor mode for more evil in `ledger-mode'."
   :group 'evil)
 
-(evil-declare-motion #'ledger-navigate-next-xact-or-directive)
-(evil-declare-motion #'ledger-navigate-prev-xact-or-directive)
+(evil-define-motion evil-ledger-forward-xact (&optional count)
+  "Moves the cursor COUNT transactions forwards."
+  (evil-motion-loop (nil (or count 1))
+    (ledger-navigate-next-xact-or-directive)))
+
+(evil-define-motion evil-ledger-backward-xact (&optional count)
+  "Moves the cursor COUNT transactions backwards."
+  (evil-motion-loop (nil (or count 1))
+    (ledger-navigate-prev-xact-or-directive)))
 
 (defvar evil-ledger-mode-map
   (let ((map (make-sparse-keymap)))
     (mapc (lambda (state)
             (evil-define-key state map
-              "gj" #'ledger-navigate-next-xact-or-directive
-              "gk" #'ledger-navigate-prev-xact-or-directive))
+              "gj" #'evil-ledger-forward-xact
+              "gk" #'evil-ledger-backward-xact))
           '(normal motion))
    map))
 
