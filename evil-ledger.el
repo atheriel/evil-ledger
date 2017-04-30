@@ -58,6 +58,20 @@
     (ledger-post-align-xact beg))
   (ledger-post-align-postings beg end))
 
+(evil-define-text-object evil-ledger-inner-xact (count &optional beg end type)
+  "Select inside the transaction at point."
+  (let ((begin (save-excursion (ledger-navigate-beginning-of-xact) (point)))
+        (end (save-excursion (ledger-navigate-end-of-xact) (point))))
+    (evil-range begin end)))
+
+(evil-define-text-object evil-ledger-outer-xact (count &optional beg end type)
+  "Select around the transaction at point."
+  (let ((begin (save-excursion (ledger-navigate-beginning-of-xact) (point)))
+        (end (save-excursion
+               (ledger-navigate-next-xact-or-directive)
+               (point))))
+    (evil-range begin end)))
+
 (defvar evil-ledger-mode-map
   (let ((map (make-sparse-keymap)))
     (mapc (lambda (state)
@@ -76,6 +90,10 @@
   :lighter " EvilLedger"
   :keymap evil-ledger-mode-map
   :group 'evil-ledger
+  (define-key evil-visual-state-local-map (kbd "ix") 'evil-ledger-inner-xact)
+  (define-key evil-operator-state-local-map (kbd "ix") 'evil-ledger-inner-xact)
+  (define-key evil-visual-state-local-map (kbd "ax") 'evil-ledger-outer-xact)
+  (define-key evil-operator-state-local-map (kbd "ax") 'evil-ledger-outer-xact)
   (evil-normalize-keymaps))
 
 (provide 'evil-ledger)
