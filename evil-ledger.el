@@ -49,6 +49,15 @@
   (evil-motion-loop (nil (or count 1))
     (ledger-navigate-prev-xact-or-directive)))
 
+(evil-define-operator evil-ledger-align (&optional beg end)
+  "Align all postings in the region."
+  :keep-visual t
+  :move-point nil
+  (interactive "<r>")
+  (when (not beg)
+    (ledger-post-align-xact beg))
+  (ledger-post-align-postings beg end))
+
 (defvar evil-ledger-mode-map
   (let ((map (make-sparse-keymap)))
     (mapc (lambda (state)
@@ -56,7 +65,11 @@
               "gj" #'evil-ledger-forward-xact
               "gk" #'evil-ledger-backward-xact))
           '(normal motion))
-   map))
+    (evil-define-key 'normal map
+      "=" #'evil-ledger-align)
+    (evil-define-key 'visual map
+      "=" #'evil-ledger-align)
+     map))
 
 (define-minor-mode evil-ledger-mode
   "Minor mode for more evil in `ledger-mode'."
