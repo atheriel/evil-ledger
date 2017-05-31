@@ -6,7 +6,7 @@
 ;; URL: https://github.com/atheriel/evil-ledger
 ;; Keywords: evil, vim-emulation
 ;; Version: 0.1
-;; Package-Requires: ((evil "1.0.0"))
+;; Package-Requires: ((evil "1.2.12"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -72,24 +72,41 @@
                (point))))
     (evil-range begin end)))
 
-(defvar evil-ledger-mode-map
-  (let ((map (make-sparse-keymap)))
-    (mapc (lambda (state)
-            (evil-define-key state map
-              "gj" #'evil-ledger-forward-xact
-              "gk" #'evil-ledger-backward-xact))
-          '(normal motion))
-    (evil-define-key 'normal map
-      "=" #'evil-ledger-align)
-    (evil-define-key 'visual map
-      "=" #'evil-ledger-align)
-     map))
+;;;; Minor Mode
+
+(defvar evil-ledger-mode-map (make-sparse-keymap)
+  "Keymap for `evil-ledger-mode'.
+
+\\{evil-ledger-mode-map}")
+
+(defvar evil-ledger--mode-map-initialized nil)
+
+(defun evil-ledger--mode-map-initialize ()
+  "Add keys to `evil-ledger-mode-map'."
+  (dolist (state '(normal motion visual))
+    ;; For some strange reason, this needs to be the function version to work
+    ;; correctly. Possibly due to poor macro hygiene in `evil-define-key'.
+    ;; (I am not the first to notice these issues...)
+    (evil-define-key* state evil-ledger-mode-map
+      (kbd "gj") 'evil-ledger-forward-xact
+      (kbd "gk") 'evil-ledger-backward-xact))
+  ;; (evil-define-key 'normal evil-ledger-mode-map
+  ;;   "=" #'evil-ledger-align)
+  (evil-define-key 'visual evil-ledger-mode-map
+    "=" #'evil-ledger-align)
+  (setq evil-ledger--mode-map-initialized t))
 
 (define-minor-mode evil-ledger-mode
-  "Minor mode for more evil in `ledger-mode'."
+  "Minor mode for more evil in `ledger-mode'.
+
+The following keys are available in `evil-ledger-mode':
+
+\\{evil-ledger-mode-map}"
   :lighter " EvilLedger"
   :keymap evil-ledger-mode-map
   :group 'evil-ledger
+  (unless evil-ledger--mode-map-initialized
+    (evil-ledger--mode-map-initialize))
   (define-key evil-visual-state-local-map (kbd "ix") 'evil-ledger-inner-xact)
   (define-key evil-operator-state-local-map (kbd "ix") 'evil-ledger-inner-xact)
   (define-key evil-visual-state-local-map (kbd "ax") 'evil-ledger-outer-xact)
