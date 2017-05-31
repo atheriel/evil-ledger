@@ -58,17 +58,44 @@
     (ledger-post-align-xact beg))
   (ledger-post-align-postings beg end))
 
-(evil-define-text-object evil-ledger-inner-xact (count &optional beg end type)
-  "Select inside the transaction at point."
-  (let ((begin (save-excursion (ledger-navigate-beginning-of-xact) (point)))
-        (end (save-excursion (ledger-navigate-end-of-xact) (point))))
+
+(defsubst evil-ledger--xact-begin-near (&optional point)
+  "Returns the buffer position of the transaction beginning
+nearest POINT."
+ (save-excursion
+   (when point (goto-char point))
+   (ledger-navigate-beginning-of-xact)
+   (point)))
+
+(evil-define-text-object evil-ledger-inner-xact (count &optional beg end _)
+  "Select inside COUNT transactions at point."
+  (let* ((begin (evil-ledger--xact-begin-near beg))
+         (xend (save-excursion
+                 (when end (goto-char end))
+                 (ledger-navigate-end-of-xact)
+                 (point)))
+         ;; If the selection (or point) is inside a transaction, expand to
+         ;; select that transaction before moving on to any others.
+         (steps (if (or (and beg end (= (1+ beg) end))
+                        (and beg end (= begin beg) (> xend end))
+                        (and (null beg) (null end)))
+                    (1- (or count 1))
+                  (or count 1)))
+         (end (save-excursion
+                (when end (goto-char end))
+                (evil-motion-loop (nil steps)
+                  (ledger-navigate-next-xact-or-directive))
+                (ledger-navigate-end-of-xact)
+                (point))))
     (evil-range begin end)))
 
-(evil-define-text-object evil-ledger-outer-xact (count &optional beg end type)
-  "Select around the transaction at point."
-  (let ((begin (save-excursion (ledger-navigate-beginning-of-xact) (point)))
+(evil-define-text-object evil-ledger-outer-xact (count &optional beg end _)
+  "Select around COUNT transactions at point."
+  (let ((begin (evil-ledger--xact-begin-near beg))
         (end (save-excursion
-               (ledger-navigate-next-xact-or-directive)
+               (when end (goto-char end))
+               (evil-motion-loop (nil (or count 1))
+                 (ledger-navigate-next-xact-or-directive))
                (point))))
     (evil-range begin end)))
 
