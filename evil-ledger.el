@@ -39,6 +39,8 @@
   "Minor mode for more evil in `ledger-mode'."
   :group 'evil)
 
+;;;; Motions
+
 (evil-define-motion evil-ledger-forward-xact (&optional count)
   "Moves the cursor COUNT transactions forwards."
   (evil-motion-loop (nil (or count 1))
@@ -49,6 +51,8 @@
   (evil-motion-loop (nil (or count 1))
     (ledger-navigate-prev-xact-or-directive)))
 
+;;;; Operators
+
 (evil-define-operator evil-ledger-align (&optional beg end)
   "Align all postings in the region."
   :keep-visual t
@@ -58,6 +62,7 @@
     (ledger-post-align-xact beg))
   (ledger-post-align-postings beg end))
 
+;;;; Text Objects
 
 (defsubst evil-ledger--xact-begin-near (&optional point)
   "Returns the buffer position of the transaction beginning
