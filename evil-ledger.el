@@ -62,6 +62,14 @@
     (ledger-post-align-xact beg))
   (ledger-post-align-postings beg end))
 
+(evil-define-operator evil-ledger-sort (&optional beg end)
+  "Sort all postings in the region by date."
+  :keep-visual nil
+  :move-point t
+  (interactive "<r>")
+  (when (and beg end)
+    (ledger-sort-region beg end)))
+
 ;;;; Text Objects
 
 (defsubst evil-ledger--xact-begin-near (&optional point)
