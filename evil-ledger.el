@@ -4,9 +4,9 @@
 
 ;; Author: Aaron Jacobs <atheriel@gmail.com>
 ;; URL: https://github.com/atheriel/evil-ledger
-;; Keywords: evil, vim-emulation
+;; Keywords: convenience evil languages ledger vim-emulation
 ;; Version: 0.1
-;; Package-Requires: ((evil "1.2.12"))
+;; Package-Requires: ((emacs "24.4") (evil "1.2.12"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -79,8 +79,7 @@ for `evil-ledger-sort'."
 ;;;; Text Objects
 
 (defsubst evil-ledger--xact-begin-near (&optional point)
-  "Returns the buffer position of the transaction beginning
-nearest POINT."
+  "Return the buffer position of the transaction beginning nearest POINT."
  (save-excursion
    (when point (goto-char point))
    (ledger-navigate-beginning-of-xact)
@@ -121,7 +120,7 @@ nearest POINT."
 ;;;; Minor Mode
 
 (defvar evil-ledger-mode-map (make-sparse-keymap)
-  "Keymap for `evil-ledger-mode'.
+  "Keymap for command `evil-ledger-mode'.
 
 \\{evil-ledger-mode-map}")
 
@@ -130,14 +129,11 @@ nearest POINT."
 (defun evil-ledger--mode-map-initialize ()
   "Add keys to `evil-ledger-mode-map'."
   (dolist (state '(normal motion visual))
-    ;; For some strange reason, this needs to be the function version to work
-    ;; correctly. Possibly due to poor macro hygiene in `evil-define-key'.
-    ;; (I am not the first to notice these issues...)
     (evil-define-key* state evil-ledger-mode-map
       (kbd "gj") 'evil-ledger-forward-xact
       (kbd "gk") 'evil-ledger-backward-xact))
-  (evil-define-key 'visual evil-ledger-mode-map
-    "=" #'evil-ledger-align)
+  (evil-define-key* 'visual evil-ledger-mode-map
+    (kbd "=") #'evil-ledger-align)
   (when evil-ledger-sort-key
     (evil-define-key* 'visual evil-ledger-mode-map
       (kbd evil-ledger-sort-key) #'evil-ledger-sort))
