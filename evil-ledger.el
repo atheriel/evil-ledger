@@ -153,6 +153,15 @@ The following keys are available in `evil-ledger-mode':
   (define-key evil-operator-state-local-map (kbd "ax") 'evil-ledger-outer-xact)
   (evil-normalize-keymaps))
 
+;;;; Report Mode Modification
+
+(with-eval-after-load 'ledger-report
+  (add-to-list 'evil-motion-state-modes 'ledger-report-mode)
+  (evil-define-key* 'motion ledger-report-mode-map
+                    "e" #'ledger-report-edit-report
+                    "gd" #'ledger-report-visit-source
+                    "gr" #'ledger-report-redo))
+
 (provide 'evil-ledger)
 
 ;; Local Variables:
