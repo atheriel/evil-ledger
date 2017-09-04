@@ -59,6 +59,8 @@ default. You can add one with
                   "S" #'evil-ledger-sort)
 ```
 
+or by setting `evil-ledger-sort-key`.
+
 ### Configuration
 
 To make the minor mode start automatically in Ledger buffers, you can add it as
@@ -75,6 +77,7 @@ For `use-package` users, the following is a sample configuration:
   :ensure t
   :after ledger-mode
   :config
+  (setq evil-ledger-sort-key "S")
   (add-hook 'ledger-mode-hook #'evil-ledger-mode))
 ```
 

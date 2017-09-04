@@ -39,6 +39,12 @@
   "Minor mode for more evil in `ledger-mode'."
   :group 'evil)
 
+(defcustom evil-ledger-sort-key nil
+  "When non-nil, specifies the keybinding in `evil-visual-state'
+for `evil-ledger-sort'."
+  :type 'str
+  :group 'evil-ledger)
+
 ;;;; Motions
 
 (evil-define-motion evil-ledger-forward-xact (&optional count)
@@ -130,10 +136,11 @@ nearest POINT."
     (evil-define-key* state evil-ledger-mode-map
       (kbd "gj") 'evil-ledger-forward-xact
       (kbd "gk") 'evil-ledger-backward-xact))
-  ;; (evil-define-key 'normal evil-ledger-mode-map
-  ;;   "=" #'evil-ledger-align)
   (evil-define-key 'visual evil-ledger-mode-map
     "=" #'evil-ledger-align)
+  (when evil-ledger-sort-key
+    (evil-define-key* 'visual evil-ledger-mode-map
+      (kbd evil-ledger-sort-key) #'evil-ledger-sort))
   (setq evil-ledger--mode-map-initialized t))
 
 (define-minor-mode evil-ledger-mode
