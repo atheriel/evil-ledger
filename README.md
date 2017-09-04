@@ -38,9 +38,26 @@ the transaction at point, plus the next one as well, and so on.
 Commands also support numerical prefixes, so `d3ax` deletes the current and next
 two transactions.
 
+### Navigation
+
 `evil-ledger-mode` also provides navigation aids `gj` and `gk` for jumping to
 the next and previous transactions, respectively. Of course, `3gj` will work as
 expected.
+
+### Alignment and Sorting
+
+`evil-ledger-mode` adds an `evil-ledger-align` operator to visual state with the
+keybinding `=`, so that, for example, `v3ax=` will select the next three
+transactions and align all postings in them.
+
+There is also an `evil-ledger-sort` operator that will sort transactions by date
+(as per `ledger-sort-region`), although it does not have a keybinding by
+default. You can add one with
+
+``` emacs-lisp
+(evil-define-key* 'visual evil-ledger-mode-map
+                  "S" #'evil-ledger-sort)
+```
 
 ### Configuration
 
