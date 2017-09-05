@@ -34,6 +34,7 @@
 
 (require 'evil)
 (require 'ledger-mode)
+(require 'ledger-report)
 
 (defgroup evil-ledger nil
   "Minor mode for more evil in `ledger-mode'."
@@ -139,6 +140,7 @@ for `evil-ledger-sort'."
       (kbd evil-ledger-sort-key) #'evil-ledger-sort))
   (setq evil-ledger--mode-map-initialized t))
 
+;;;###autoload
 (define-minor-mode evil-ledger-mode
   "Minor mode for more evil in `ledger-mode'.
 
@@ -158,12 +160,11 @@ The following keys are available in `evil-ledger-mode':
 
 ;;;; Report Mode Modification
 
-(with-eval-after-load 'ledger-report
-  (add-to-list 'evil-motion-state-modes 'ledger-report-mode)
-  (evil-define-key* 'motion ledger-report-mode-map
-                    "e" #'ledger-report-edit-report
-                    "gd" #'ledger-report-visit-source
-                    "gr" #'ledger-report-redo))
+(add-to-list 'evil-motion-state-modes 'ledger-report-mode)
+(evil-define-key* 'motion ledger-report-mode-map
+                  "e" #'ledger-report-edit-report
+                  "gd" #'ledger-report-visit-source
+                  "gr" #'ledger-report-redo)
 
 (provide 'evil-ledger)
 
