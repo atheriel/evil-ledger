@@ -1,9 +1,11 @@
 # Making `ledger-mode` more Evil
 
-`evil-ledger` is a minor mode for Emacs that adds Evil motions and operators to
-`ledger-mode` buffers. It allows you to treat transactions as text objects while
-in `evil-mode` -- selecting, deleting, and changing around and inside them as a
-unit.
+[![MELPA](https://melpa.org/packages/evil-ledger-badge.svg)](https://melpa.org/#/evil-ledger)
+
+The `evil-ledger` package provides a minor mode for Emacs that adds Evil motions
+and operators to `ledger-mode` buffers. It allows you to treat transactions as
+text objects while in `evil-mode` -- selecting, deleting, and changing around
+and inside them as a unit.
 
 For example, given the transaction and cursor (indicated by `|`) below
 
@@ -16,6 +18,10 @@ For example, given the transaction and cursor (indicated by `|`) below
 `vax` selects the transaction around point and all whitespace up to the next
 transaction. This makes for easy copying, moving, and deletion of transactions
 as a whole, instead of by selecting a series of lines.
+
+## Installation
+
+`evil-ledger` is available from MELPA.
 
 ## Usage
 
